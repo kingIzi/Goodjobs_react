@@ -1,0 +1,1 @@
+export const BASE_URL = 'https://goodjobs-backend-solely-24.onrender.com';
