@@ -121,8 +121,8 @@ export function SignIn() {
         )),
         switchMap((res) => defer(() => res.json()).pipe(
           delay(800),
-          finalize(() => setIsLoading(false))
         )),
+        finalize(() => setIsLoading(false))
       ).subscribe({
         next: (res) => {
           if (res.status && res.status === 'success') {

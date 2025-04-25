@@ -47,16 +47,13 @@ const CompanyList = () => {
 
     <div>
     <div className="flex justify-end items-start">
-  {/* <button onClick={() => setIsModalOpen(true)} className="mb-4 px-4 py-2 bg-blue-500 text-white rounded">
-    Add Company
-  </button> */}
   <div className="flex flex-row items-center justify-between w-full my-4">
     <Typography className="font-poppins text-2xl">
       Available companies
     </Typography>
-    <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 bg-blue-500 text-white rounded">
-    Add Company
-  </button>
+    <Button className='bg-[#071460] hover:bg-[#180463]' onClick={() => setIsModalOpen(true)}>
+      Add Company
+    </Button>
   </div>
 </div>
       {dataLoading ? (
@@ -82,7 +79,7 @@ const CompanyList = () => {
                 <tr key={key}>
                   <td className="py-3 px-5">
                     <div className="flex items-center gap-4">
-                      <img src={company.image || 'default-image-url'} alt={company.name} className="w-10 h-10 rounded-full object-cover" />
+                      <img src={company.signed_url || 'default-image-url'} alt={company.name} className="w-10 h-10 rounded-full object-cover" />
                       <div>
                         <div className="font-semibold text-blue-gray">{company.name}</div>
                       </div>

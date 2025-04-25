@@ -15,6 +15,7 @@ import React, { useState, useEffect } from 'react';
 import Spinner from "@material-tailwind/react";
 import useUserProfileStore from "@/store/userProfileStore";
 import LoadingIndicator from "@/widgets/loading/LoadingIndicator";
+
 export function CV() {
   const cvs = useUserProfileStore(state => state.userProfiles);
   const dataLoading = useUserProfileStore(state => state.dataLoading);

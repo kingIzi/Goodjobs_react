@@ -22,7 +22,6 @@ export const useFetchUsers = (userID) => {
     }
 
     if(data){
-console.log(data)
 if(data.status === 'success' ){
         setUsers(data.data)
     }

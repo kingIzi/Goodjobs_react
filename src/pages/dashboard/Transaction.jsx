@@ -14,6 +14,7 @@ import {
   import { authorsTableData, projectsTableData } from "@/data";
 import useTransactionStore from '@/store/transactionStore';
 import LoadingIndicator from '@/widgets/loading/LoadingIndicator';
+import { BASE_URL } from '@/data/app-constants';
 const Transaction = () => {
   const transactions = useTransactionStore(state => state.transactions);
   const dataLoading = useTransactionStore(state => state.dataLoading);

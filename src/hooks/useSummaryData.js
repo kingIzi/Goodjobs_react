@@ -20,7 +20,6 @@ export const useFetchSummary = (userID) => {
     }
 
     if(data){
-console.log(data)
 if(data.status === 'success' ){
         setSummary(data.data)
     }

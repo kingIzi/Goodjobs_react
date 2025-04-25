@@ -34,7 +34,6 @@ export const useFetchTips = () => {
   
 
     if(data){
-      console.log(`data`, data.data)
       const transformedData = data.data.map(tip => ({
         id: tip.id,
         image: tip.tip_image,

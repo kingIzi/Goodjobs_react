@@ -21,7 +21,6 @@ export const useFetchUserProfileData = (userID) => {
     }
 
     if(data){
-console.log(data);
       if(data.status === 'success' ){
         setUserProfiles(data.data)
           }

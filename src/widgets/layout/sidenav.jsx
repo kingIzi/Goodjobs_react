@@ -108,15 +108,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
                     <NavLink to={`/${layout}${path}`}>
                       {({ isActive }) => (
                         <Button
-                          variant={isActive ? "gradient" : "text"}
-                          color={
-                            isActive
-                              ? sidenavColor
-                              : sidenavType === "dark"
-                              ? "white"
-                              : "#6873C2"
-                          }
-                          className="flex items-center gap-4 px-4 capitalize"
+                          variant="gradient"
+                          className={`flex items-center gap-4 px-4 capitalize ${
+                            isActive ? "bg-gradient-to-r from-[#071460] to-[#180463]" : "shadow-none"
+                          }`}
+                          color={isActive ? undefined : "white"}
                           fullWidth
                         >
                           {icon}

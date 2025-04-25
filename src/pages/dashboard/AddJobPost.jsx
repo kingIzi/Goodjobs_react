@@ -7,6 +7,34 @@ import { Input, Button } from '@material-tailwind/react';
 import useCompaniesStore from '@/store/companiesStore';
 import LoadingIndicator from '@/widgets/loading/LoadingIndicator';
 import useCategoriesStore from '@/store/categoriesStore';
+import { BASE_URL } from '@/data/app-constants';
+import { Controller, useForm } from "react-hook-form";
+import { InputFormField,ReactQuillField } from './company/CompanyForm';
+import { catchError, delay, finalize, map, of, switchMap, tap } from 'rxjs';
+import { Toaster, toast } from 'sonner';
+
+
+export const SelectInput = React.forwardRef(({ options,label,error, value = "", onChange, ...props }, ref) => {
+  const selectedOption = options?.find(option => option.value === value) || null;
+  return (
+    <div className="flex flex-col w-full">
+      <Select
+        searchInputPlaceholder={label}
+        isSearchable={true}
+        placeholder={label} 
+        options={options}
+        value={selectedOption}
+        onChange={(selectedOption) => {
+          onChange?.(selectedOption?.value);
+        }}
+        ref={ref}
+        {...props}
+      />
+      <p className={`text-red-500 text-xs h-4 mt-1 !font-poppins duration-500 ${error?.message ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"}`}>{error && error?.message}</p>
+    </div>
+  );
+});
+
 
 const AddJobPostForm = () => {
   const [selectedCompany, setSelectedCompany] = useState({'value': '', 'label': 'Select Company', 'disabled': false});
@@ -27,39 +55,39 @@ const AddJobPostForm = () => {
   const companiesLoading = useCompaniesStore(state => state.dataLoading);
   const [companiesSearchTerm, setSearchTerm] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const submissionData = {
-      company_id: selectedCompany.value,
-      location,
-      job_title: jobTitle,
-      job_type: jobType,
-      salary_min: salaryMin,
-      salary_max: salaryMax,
-      job_post_url: jobPostUrl,
-      job_description: jobDescription,
-      deadline, // Include deadline in submission data
-      category_id: selectedCategory.value
-    };
-    console.log(`Submitting ${JSON.stringify(submissionData)}`);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+  //   const submissionData = {
+  //     company_id: selectedCompany.value,
+  //     location,
+  //     job_title: jobTitle,
+  //     job_type: jobType,
+  //     salary_min: salaryMin,
+  //     salary_max: salaryMax,
+  //     job_post_url: jobPostUrl,
+  //     job_description: jobDescription,
+  //     deadline, // Include deadline in submission data
+  //     category_id: selectedCategory.value
+  //   };
+  //   console.log(`Submitting ${JSON.stringify(submissionData)}`);
 
-    //const response = await fetch("https://goodjobs.tradingjournal.app/api/add_job_post/", {
-    const response = await fetch("http://127.0.0.1:8000/api/add_job_post/", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(submissionData),
-    });
+  //   //const response = await fetch("https://goodjobs.tradingjournal.app/api/add_job_post/", {
+  //   const response = await fetch(`${BASE_URL}/api/add_job_post/`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(submissionData),
+  //   });
 
-    const result = await response.json();
-    navigate('/');
-    setIsJobAdded(true);
-  };
+  //   const result = await response.json();
+  //   navigate('/');
+  //   setIsJobAdded(true);
+  // };
+  const { control,handleSubmit,formState: { errors } } = useForm();
 
   const companiesOption = companies.map((company) => {
-    console.log("company", company);
     let label = company.name;
     let value = company.id.toString();
 
@@ -91,42 +119,111 @@ const AddJobPostForm = () => {
     setSelectedCategory(value);
   };
 
+  const onSubmit = (form) => {
+    of(form).pipe(
+      tap((form) => setIsLoading(true)),
+      map((form) => ({
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      })),
+      switchMap((formData) => fetch(`${BASE_URL}/api/add_job_post/`,formData)),
+      switchMap((res) => res.json()),
+      catchError((err) => {
+        toast.error(
+          'An error occurred on the server. Please contact support or try again.',
+          {
+            duration: 8000
+          }
+        );
+        throw err;
+      })
+    ).subscribe({
+      next: (value) => window.location.reload()
+    })
+  };
+
   return (
-    <div>
-      {companiesLoading ? (
-        <LoadingIndicator />
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Select
-            value={selectedCompany}
-            onChange={handleCompanyChange}
-            options={companiesOption}
-            searchInputPlaceholder='Search Companies'
-            isSearchable={true}
-            placeholder='Select Company'
-          />
-          <Select
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-            options={categoriesOption}
-            searchInputPlaceholder='Search Category'
-            isSearchable={true}
-            placeholder='Select Category'
-          />
-          <Input type="text" color="blue" label="Job Title" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} />
-          <Input type="text" color="blue" label="Location" value={location} onChange={(e) => setLocation(e.target.value)} />
-          <Input type="text" color="blue" label="Job Type" value={jobType} onChange={(e) => setJobType(e.target.value)} />
-          <Input type="number" color="blue" label="Minimum Salary" value={salaryMin} onChange={(e) => setSalaryMin(e.target.value)} />
-          <Input type="number" color="blue" label="Maximum Salary" value={salaryMax} onChange={(e) => setSalaryMax(e.target.value)} />
-          <Input type="url" color="blue" label="Job Post URL" value={jobPostUrl} onChange={(e) => setJobPostUrl(e.target.value)} />
-          <Input type="date" color="blue" label="Deadline" value={deadline} onChange={(e) => setDeadline(e.target.value)} /> {/* New input for deadline */}
-          <ReactQuill theme="snow" value={jobDescription} onChange={setJobDescription} />
-          <Button type="submit" color="blue" ripple="light">
-            Submit Job Post
-          </Button>
-        </form>
-      )}
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <Controller 
+        name='company_id'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please select the company"}}
+        render={({ field,fieldState }) => <SelectInput options={companiesOption} label='Select Company' {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='category_id'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please select the category"}}
+        render={({ field,fieldState }) => <SelectInput options={categoriesOption} label='Select Category' {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='job_title'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please provide the job title"}} 
+        render={({ field,fieldState }) => <InputFormField label="Enter Job title" {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='location'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please enter a job location"}} 
+        render={({ field,fieldState }) => <InputFormField label="Enter Job location" {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='job_type'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please provide the job type"}} 
+        render={({ field,fieldState }) => <InputFormField label="Enter Job type" {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='salary_min'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please provide entry salary"}} 
+        render={({ field,fieldState }) => <InputFormField type="number" label="Salary min" {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='salary_max'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please provide a maximum salary"}} 
+        render={({ field,fieldState }) => <InputFormField type="number" label="Salary max" {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='job_post_url'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please provide the job application url"}} 
+        render={({ field,fieldState }) => <InputFormField type="url" label="https://" {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='deadline'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please provide a deadline"}} 
+        render={({ field,fieldState }) => <InputFormField type="date" label="Deadline" {...field} error={fieldState.error} />}
+      />
+      <Controller 
+        name='job_description'
+        defaultValue=''
+        control={control}
+        rules={{ required: "Please provide a the job description"}} 
+        render={({ field,fieldState }) => <ReactQuillField {...field} error={fieldState.error} />} 
+      />
+       <Button loading={isLoading} disabled={Object.keys(errors).length > 0 || isLoading} className="font-poppins bg-[#071460] hover:bg-[#180463]" type="submit" fullWidth>
+          Add Job Post
+      </Button>
+      <div className="absolute top-0">
+         <Toaster position="top-left" richColors />
+      </div>
+    </form>
   );
 };
 

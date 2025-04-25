@@ -7,6 +7,7 @@ import {
   CardBody,
 } from "@material-tailwind/react";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { BASE_URL } from "@/data/app-constants";
 
 export function Notifications() {
   const [showAlerts, setShowAlerts] = React.useState({

@@ -23,6 +23,8 @@ import AddJobPostForm from './AddJobPost';
 import useJobPostStore from '@/store/jobPostStore';
 import LoadingIndicator from '@/widgets/loading/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '@/data/app-constants';
+
 const JobPost = () => {
 
   const jobPosts = useJobPostStore(state => state.jobPosts);
@@ -52,7 +54,7 @@ const requestOptions = {
   body: formdata,
   redirect: "follow"
 };
-        const response = await fetch(`http://127.0.0.1:8000/api/delete_job_post/`, requestOptions);
+        const response = await fetch(`${BASE_URL}/api/delete_job_post/`, requestOptions);
         
         if (response.ok) {
           navigate('/');
@@ -101,9 +103,12 @@ const requestOptions = {
      
       <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
       <div className="flex justify-end items-start">
-  <button onClick={() => setIsModalOpen(true)} className="mb-4 px-4 py-2 bg-blue-500 text-white rounded">
+  {/* <button onClick={() => setIsModalOpen(true)} className="mb-4 px-4 py-2 bg-blue-500 text-white rounded">
     Add JobPost
-  </button>
+  </button> */}
+  <Button className='bg-[#071460] hover:bg-[#180463]' onClick={() => setIsModalOpen(true)}>
+        Add JobPost
+      </Button>
 </div>
       <table className="w-full min-w-[540px] table-auto">
       <thead>
@@ -144,8 +149,8 @@ const requestOptions = {
               <div className="text-xs font-semibold text-blue-gray-600">{deadline}</div>
             </td>
             <td className="py-3 px-5">
-                        <button onClick={() => toggleDeleteModal(jobID)} className="text-xs font-semibold text-red-600">Delete</button>
-                      </td>
+              <button onClick={() => toggleDeleteModal(jobID)} className="text-xs font-semibold text-red-600">Delete</button>
+            </td>
           </tr>
         ))}
       </tbody>

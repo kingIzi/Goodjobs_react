@@ -9,6 +9,9 @@ import LoadingIndicator from '@/widgets/loading/LoadingIndicator';
 import useCategoriesStore from '@/store/categoriesStore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BASE_URL } from '@/data/app-constants';
+
+
 const AddTipsForm = () => {
 
 
@@ -49,7 +52,8 @@ const AddTipsForm = () => {
       };
   
     //const response = await fetch("https://goodjobs.tradingjournal.app/api/add_tip/",requestOptions);
-    const response = await fetch("http://127.0.0.1:8000/api/add_tip/",requestOptions);
+    //const response = await fetch("http://127.0.0.1:8000/api/add_tip/",requestOptions);
+    const response = await fetch(`${BASE_URL}/api/add_tip/`,requestOptions);
     
 
     const result = await response.json();
