@@ -124,6 +124,10 @@ export function SignUp() {
             Sign up
           </Button>
         </form>
+         <div className="flex flex-row items-center my-4 space-x-1 w-full justify-center">
+            <h6>Already registered?</h6>
+            <Link to={'/signin'} className="hover:underline !text-[#071460]">Sign in.</Link>
+          </div>
       </div>
       <div className="absolute top-0">
         <Toaster position="bottom-left" richColors />

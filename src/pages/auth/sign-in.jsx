@@ -171,6 +171,10 @@ export function SignIn() {
             <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal font-poppins text-center w-full">Enter your phone Number and to receive an OTP.</Typography>
           </div>
           <SignInForm />
+        <div className="flex flex-row items-center my-4 space-x-1">
+          <h6>Not registered?</h6>
+          <Link to={'/signup'} className="hover:underline !text-[#071460]">Sign up here.</Link>
+        </div>
         </div>
       </div>
       <div className="w-full h-full relative lg:block hidden">
