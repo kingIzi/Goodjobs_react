@@ -22,8 +22,7 @@ import { BehaviorSubject, catchError, concatMap, defer, delay, finalize, iif, ma
 import { flushSync } from "react-dom";
 
 
-export function SignIn() {
-  const PhoneNumberInput = React.forwardRef(({ label,error, value = "", onChange, ...props }, ref) => {
+export const PhoneNumberInput = React.forwardRef(({ label,error, value = "", onChange, ...props }, ref) => {
     const COUNTRIES = ["Tanzania (+255)"];
     const CODES = ["+255"];
     const [country, setCountry] = React.useState(0);
@@ -67,7 +66,7 @@ export function SignIn() {
               type="tel"
               inputMode="numeric"
               maxLength={9}
-              placeholder="654-456-232"
+              placeholder="XXX-XXX-XXX"
               className="font-poppins appearance-none rounded-l-none !border-t-blue-gray-200 focus:!border-t-gray-900 placeholder:opacity-100 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -100,7 +99,9 @@ export function SignIn() {
       </div>
     );
   });
-  
+
+export function SignIn() {
+
   const SignInForm = () => {
     const navigate = useNavigate();
     const { control,handleSubmit,formState: { errors } } = useForm();
@@ -119,9 +120,7 @@ export function SignIn() {
             throw err;
           })
         )),
-        switchMap((res) => defer(() => res.json()).pipe(
-          delay(800),
-        )),
+        switchMap((res) => defer(() => res.json())),
         finalize(() => setIsLoading(false))
       ).subscribe({
         next: (res) => {

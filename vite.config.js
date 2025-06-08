@@ -6,5 +6,6 @@ export default defineConfig({
   resolve: {
     alias: [{ find: "@", replacement: "/src" }],
   },
-  //base: process.env.VITE_BASE_PATH || "/Goodjobs_react"
+  //base: process.env.VITE_BASE_PATH || "/Goodjobs_react",
+  base: '/'
 });

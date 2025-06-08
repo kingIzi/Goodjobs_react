@@ -8,6 +8,7 @@ import { useAuth,AuthProvider } from "./features/auth/AuthenticationContext";
 import { useRoutes } from "react-router-dom";
 import { VerifyOtpCode } from "./pages/auth/verify-otp-code";
 import { ThemeProvider } from "@material-tailwind/react";
+import { VerifySignUpOtpCode } from './pages/auth/verify-sign-up-otp'
 
 
 
@@ -17,8 +18,9 @@ const AppWrapper = () => {
     { path: "/", element: <Navigate to="/dashboard/home/" /> },
     { path: "/dashboard/*", element: auth.isAuthenticated ?  <Dashboard  /> : <Navigate to="/signin" /> },
     { path: "/signin", element:  <SignIn />  },
-    { path: '/otp', element: <VerifyOtpCode /> }
-    // {path: '/signin', element: <SignUp />}
+    { path: '/otp', element: <VerifyOtpCode /> },
+    {path: '/signup', element: <SignUp />},
+    {path: '/signup-verify', element: <VerifySignUpOtpCode />}
     // ...
   ]);
   return routes;
@@ -28,9 +30,6 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={true} />
-      {/* <AuthProvider>
-        <AppWrapper />
-      </AuthProvider>       */}
       <AuthProvider>
         <ThemeProvider>
           <AppWrapper />
